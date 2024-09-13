@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
 import upload from "../../lib/upload";
 
 const Login = () => {
@@ -34,17 +34,42 @@ const Login = () => {
     const { username, email, password } = Object.fromEntries(formData);
 
     // VALIDATE INPUTS
-    if (!username || !email || !password)
-      return toast.warn("Please enter inputs!");
-    if (!avatar.file) return toast.warn("Please upload an avatar!");
+    if (!username || !email || !password) {
+      toast.warn("All fields are required!");
+      setLoading(false);
+      return;
+    }
 
-    // // VALIDATE UNIQUE USERNAME
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.warn("Invalid email format!");
+      setLoading(false);
+      return;
+    }
+
+    // Password validation (min 6 characters)
+    if (password.length < 6) {
+      toast.warn("Password must be at least 6 characters!");
+      setLoading(false);
+      return;
+    }
+
+    if (!avatar.file) {
+      toast.warn("Please upload an avatar!");
+      setLoading(false);
+      return;
+    }
+
+    // VALIDATE UNIQUE USERNAME
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("username", "==", username));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      return toast.warn("Select another username");
-    } 
+      toast.warn("Select another username");
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -104,7 +129,7 @@ const Login = () => {
         <h2>Create an Account</h2>
         <form onSubmit={handleRegister}>
           <label htmlFor="file">
-            <img src={avatar.url || "./avatar.png"} alt="" />
+            <img src={avatar.url || "./avatar.png"} alt="avatar" />
             Upload an image
           </label>
           <input

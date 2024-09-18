@@ -4,6 +4,7 @@ It was developed as the final portfolio project for the ALX Software Engineering
 
 
 Table of Contents
+
 Features
 Tech Stack
 Usage
@@ -51,6 +52,7 @@ Copy code
 │   └── styles
 │       └── login.css
 └── package.json
+
 Key Folders:
 components: Contains the UI components for chat, login, chat details, and chat listing.
 lib: Firebase configuration and state management logic (e.g., userStore.js and chatStore.js).

@@ -155,10 +155,11 @@ const Login = () => {
           <input type="text" placeholder="Email" name="email" required />
           <input type="password" placeholder="Password" name="password" required />
           <button disabled={loading}>{loading ? "Loading..." : loginMode ? "Sign In" : "Sign Up"}</button>
-        </form>
-        <button onClick={() => setLoginMode(!loginMode)}>
+          <button onClick={() => setLoginMode(!loginMode)} className="loginButton">
           {loginMode ? "Create an Account" : "Already have an account? Sign In"}
         </button>
+        </form>
+
       </div>
     </div>
   );

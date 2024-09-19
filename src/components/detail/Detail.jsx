@@ -62,7 +62,13 @@ const Detail = () => {
       <div className="user">
         <img src={user.avatar || "./avatar.png"} alt={`${user.username}'s avatar`} />
         <h2>{user.username}</h2>
-        <p>{user.isOnline ? "Online" : `Last seen: ${user.lastSeen}`}</p> {/* Show online status */}
+        <p>
+    {user.isOnline
+      ? "Online"
+      : user.lastSeen
+      ? `Last seen: ${new Date(user.lastSeen.seconds * 1000).toLocaleString()}`
+      : "Offline"}
+  </p> {/* Show online status */}
       </div>
       <div className="info">
         <div className="option" onClick={toggleEditProfile}>

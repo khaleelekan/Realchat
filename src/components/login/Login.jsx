@@ -16,6 +16,7 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [loginMode, setLoginMode] = useState(true); // Track whether to show login or registration
 
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
@@ -73,7 +74,6 @@ const Login = () => {
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-
       const imgUrl = await upload(avatar.file);
 
       await setDoc(doc(db, "users", res.user.uid), {
@@ -88,10 +88,19 @@ const Login = () => {
         chats: [],
       });
 
-      toast.success("Account created! You can login now!");
+      toast.success("Account created! You can log in now!");
+      e.target.reset(); // Clear form fields on success
+      setAvatar({ file: null, url: "" }); // Reset avatar
     } catch (err) {
-      console.log(err);
-      toast.error(err.message);
+      console.error(err);
+      // Custom error handling for specific cases
+      if (err.code === "auth/email-already-in-use") {
+        toast.error("Email already in use! Please use a different email.");
+      } else if (err.code === "auth/weak-password") {
+        toast.error("The password is too weak! Please choose a stronger password.");
+      } else {
+        toast.error("Registration failed! Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -106,9 +115,18 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      toast.success("Login successful!"); // Indicate successful login
+      e.target.reset(); // Clear form fields on success
     } catch (err) {
-      console.log(err);
-      toast.error(err.message);
+      console.error(err);
+      // Custom error handling for specific cases
+      if (err.code === "auth/wrong-password") {
+        toast.error("Wrong password! Please try again.");
+      } else if (err.code === "auth/user-not-found") {
+        toast.error("No user found with this email! Please register.");
+      } else {
+        toast.error("Login failed! Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -117,35 +135,34 @@ const Login = () => {
   return (
     <div className="login">
       <div className="item">
-        <h2>Welcome back,</h2>
-        <form onSubmit={handleLogin}>
-          <input type="text" placeholder="Email" name="email" />
-          <input type="password" placeholder="Password" name="password" />
-          <button disabled={loading}>{loading ? "Loading" : "Sign In"}</button>
+        <h2>{loginMode ? "Welcome back," : "Create an Account"}</h2>
+        <form onSubmit={loginMode ? handleLogin : handleRegister}>
+          {!loginMode && (
+            <label htmlFor="file">
+              <img src={avatar.url || "./avatar.png"} alt="avatar" />
+              Upload an image
+            </label>
+          )}
+          {!loginMode && (
+            <input
+              type="file"
+              id="file"
+              style={{ display: "none" }}
+              onChange={handleAvatar}
+            />
+          )}
+          {!loginMode && <input type="text" placeholder="Username" name="username" required />}
+          <input type="text" placeholder="Email" name="email" required />
+          <input type="password" placeholder="Password" name="password" required />
+          <button disabled={loading}>{loading ? "Loading..." : loginMode ? "Sign In" : "Sign Up"}</button>
         </form>
-      </div>
-      <div className="separator"></div>
-      <div className="item">
-        <h2>Create an Account</h2>
-        <form onSubmit={handleRegister}>
-          <label htmlFor="file">
-            <img src={avatar.url || "./avatar.png"} alt="avatar" />
-            Upload an image
-          </label>
-          <input
-            type="file"
-            id="file"
-            style={{ display: "none" }}
-            onChange={handleAvatar}
-          />
-          <input type="text" placeholder="Username" name="username" />
-          <input type="text" placeholder="Email" name="email" />
-          <input type="password" placeholder="Password" name="password" />
-          <button disabled={loading}>{loading ? "Loading" : "Sign Up"}</button>
-        </form>
+        <button onClick={() => setLoginMode(!loginMode)}>
+          {loginMode ? "Create an Account" : "Already have an account? Sign In"}
+        </button>
       </div>
     </div>
   );
 };
 
 export default Login;
+

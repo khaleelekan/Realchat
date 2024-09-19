@@ -3,11 +3,18 @@ import { useChatStore } from "../../lib/chatStore";
 import { auth, db } from "../../lib/firebase";
 import { useUserStore } from "../../lib/userStore";
 import "./detail.css";
+import { useState } from "react";
+import EditProfile from "./EditProfile"; // Create a separate component for editing profile
+import SharedMedia from "./SharedMedia"; // Create a separate component for viewing shared media
+import ConfirmDialog from "./ConfirmDialog"; // Create a confirmation dialog component
 
 const Detail = () => {
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat } =
     useChatStore();
   const { currentUser } = useUserStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isMediaVisible, setIsMediaVisible] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const handleBlock = async () => {
     if (!user) return;
@@ -26,90 +33,51 @@ const Detail = () => {
 
   const handleLogout = () => {
     auth.signOut();
-    resetChat()
+    resetChat();
   };
+
+  const toggleEditProfile = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const toggleSharedMedia = () => {
+    setIsMediaVisible(!isMediaVisible);
+  };
+
+  const handleConfirmBlock = () => {
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmBlockAction = async (confirm) => {
+    if (confirm) {
+      await handleBlock();
+    }
+    setShowConfirmDialog(false);
+  };
+
+  if (!user) return null; // Prevent rendering if user does not exist
 
   return (
     <div className="detail">
       <div className="user">
-        <img src={user?.avatar || "./avatar.png"} alt="" />
-        <h2>{user?.username}</h2>
-        <p>Lorem ipsum dolor sit amet.</p>
+        <img src={user.avatar || "./avatar.png"} alt={`${user.username}'s avatar`} />
+        <h2>{user.username}</h2>
+        <p>{user.isOnline ? "Online" : `Last seen: ${user.lastSeen}`}</p> {/* Show online status */}
       </div>
       <div className="info">
-        <div className="option">
+        <div className="option" onClick={toggleEditProfile}>
           <div className="title">
-            <span>Chat Settings</span>
-            <img src="./arrowUp.png" alt="" />
+            <span>Edit Profile</span>
+            <img src="./arrowUp.png" alt="Toggle edit profile" />
           </div>
         </div>
-        <div className="option">
+        <div className="option" onClick={toggleSharedMedia}>
           <div className="title">
-            <span>Chat Settings</span>
-            <img src="./arrowUp.png" alt="" />
+            <span>Shared Media</span>
+            <img src="./arrowDown.png" alt="Toggle shared media" />
           </div>
         </div>
-        <div className="option">
-          <div className="title">
-            <span>Privacy & help</span>
-            <img src="./arrowUp.png" alt="" />
-          </div>
-        </div>
-        <div className="option">
-          <div className="title">
-            <span>Shared photos</span>
-            <img src="./arrowDown.png" alt="" />
-          </div>
-          <div className="photos">
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-          </div>
-        </div>
-        <div className="option">
-          <div className="title">
-            <span>Shared Files</span>
-            <img src="./arrowUp.png" alt="" />
-          </div>
-        </div>
-        <button onClick={handleBlock}>
+        <button onClick={handleConfirmBlock}>
           {isCurrentUserBlocked
             ? "You are Blocked!"
             : isReceiverBlocked
@@ -120,8 +88,19 @@ const Detail = () => {
           Logout
         </button>
       </div>
+      
+      {isEditing && <EditProfile user={user} onClose={toggleEditProfile} />}
+      {isMediaVisible && <SharedMedia userId={user.id} onClose={toggleSharedMedia} />}
+      {showConfirmDialog && (
+        <ConfirmDialog
+          message="Are you sure you want to block this user?"
+          onConfirm={handleConfirmBlockAction}
+          onCancel={() => setShowConfirmDialog(false)}
+        />
+      )}
     </div>
   );
 };
 
 export default Detail;
+

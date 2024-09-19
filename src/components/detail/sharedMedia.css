@@ -1,0 +1,26 @@
+.sharedMedia {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .mediaList {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .mediaItem {
+    margin: 10px;
+    text-align: center;
+  }
+  
+  .mediaItem img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  

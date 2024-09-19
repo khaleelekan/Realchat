@@ -3,7 +3,7 @@ RealChat is a fully functional chat application built with React, Firebase Authe
 It was developed as the final portfolio project for the ALX Software Engineering program in collaboration with Gugu Mthembu. Users can register, log in, and engage in real-time conversations, with features like avatar upload and unique username validation.
 
 
-Table of Contents:
+Table of Contents
 Features
 Tech Stack
 Usage
@@ -51,6 +51,7 @@ Copy code
 │   └── styles
 │       └── login.css
 └── package.json
+
 Key Folders:
 components: Contains the UI components for chat, login, chat details, and chat listing.
 lib: Firebase configuration and state management logic (e.g., userStore.js and chatStore.js).

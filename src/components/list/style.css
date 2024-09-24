@@ -1,0 +1,89 @@
+/* General body styles */
+body, html {
+	margin: 0;
+	padding: 0;
+	font-family: 'Arial',sans-serif;
+	background-color: #f7f7f7;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+/* List Container */
+.list-container {
+	width: 400px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 8px 20px rgba(0, 0,
+0, 0.1);
+	padding: 20px;
+	margin: 0;
+}
+
+/* List Header */
+.list-container .list-header {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+/* List styles */
+ul.custom-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.custom-list li {
+	display: flex;
+	align-items: center;
+	padding: 10px 15px;
+	margin-bottom: 10px;
+	background-color: #f9f9f9;
+	border-radius: 5px;
+	transition: background-color 0.3s
+ease, box-shadow 0.3s ease;
+	cursor: pointer;
+}
+
+/* Custom Bullet Icons */
+ul.custom-list li::before {
+	content: '.';
+	color: #007bff;
+	font-size: 20px;
+	margin-right: 15px;
+}
+
+/* Hover effect for list items */
+ul.custom-list li:hover {
+	background-color: #e3f2fd;
+	box-shadow: 0 4px 10px rgba(0, 123,
+255, 0.2);
+}
+
+/* Item Text Styling */
+ul.custom-list li span {
+	font-size: 16px;
+	color: #333;
+	flex-grow: 1;
+}
+
+/* Right side icon or button */
+ul.custom-list li .right-icon {
+	color: #999;
+	transition: color 0.3s ease;
+}
+
+ul.custom-list li:hover .right-icon {
+	color: #007bff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.list-container {
+		width: 90%;
+	}
+}

@@ -1,0 +1,119 @@
+/* General Styles */
+body, html {
+	margin: 0;
+	padding: 0;
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f9;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+/* Detail Card Container */
+.detail-card {
+	width: 400px;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 8px 20px rgba(0, 0,
+0, 0.1);
+	overflow: hidden;
+	padding: 20px;
+	margin: 10px;
+}
+
+/* Header Section */
+.detail-card .header {
+	text-align: center;
+	padding: 10px;
+	font-size: 22px;
+	font-weight: bold;
+	color: #333;
+	border-bottom: 1px solid #ddd;
+}
+
+/* Information Section */
+.detail-card .info-section {
+	padding: 15px 0;
+	font-size: 16px;
+	line-height: 1.6;
+	color: #666;
+}
+
+/* Info Row */
+.detail-card .info-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-card .info-row:last-child {
+	border-bottom: none;
+}
+
+.detail-card .info-row label {
+	font-weight: bold;
+	color: #333;
+}
+
+.detail-card .info-row span {
+	color: #666;
+}
+
+/* Highlighted Section */
+.detail-card .highlight {
+	background-color: #f9f9f9;
+	border-radius: 5px;
+	padding: 12px;
+	font-size: 15px;
+	color: #007bff;
+	text-align: center;
+	font-weight: bold;
+	margin-top: 15px;
+}
+
+/* Button Styles */
+.detail-card .action-buttons {
+	margin-top: 20px;
+	text-align: center;
+}
+
+.detail-card .action-buttons button {
+	padding: 10px 20px;
+	margin: 5px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+	transition: background-color 0.3s
+ease;
+}
+
+.detail-card .action-buttons .primary {
+	background-color: #007bff;
+	color: white;
+}
+
+.detail-card .action-buttons .primary:h
+over {
+	background-color: #0056b3;
+}
+
+.detail-card .action-buttons .secondary
+{
+	background-color: #f0f0f0;
+	color: #333;
+}
+
+.detail-card .action-buttons .secondary
+:hover {
+	background-color: #e0e0e0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.detail-card {
+		width: 90%;
+	}
+}

@@ -1,0 +1,114 @@
+/* General Styles */
+body, html {
+	margin: 0;
+	padding: 0;
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f9;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+/* Container for the login form */
+.login-container {
+	width: 400px;
+	background-color: #fff;
+	padding: 40px;
+	border-radius: 8px;
+	box-shadow: 0 8px 20px rgba(0, 0,
+0, 0.1);
+}
+
+/* Login Header */
+.login-header {
+	text-align: center;
+	margin-bottom: 30px;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+/* Input fields styling */
+.login-container input[type="text"],
+.login-container input[type="password"]
+{
+	width: 100%;
+	padding: 12px 15px;
+	margin: 8px 0 15px 0;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	font-size: 16px;
+	box-sizing: border-box;
+	transition: border-color 0.3s ease;
+}
+
+/* Input focus state */
+.login-container
+input[type="text"]:focus,
+.login-container
+input[type="password"]:focus {
+	border-color: #007bff;
+	outline: none;
+	box-shadow: 0 0 8px rgba(0, 123,
+255, 0.3);
+}
+
+/* Submit Button */
+.login-container button {
+	width: 100%;
+	padding: 12px 20px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background-color 0.3s
+ease;
+}
+
+.login-container button:hover {
+	background-color: #0056b3;
+}
+
+/* Remember Me Checkbox */
+.login-container .remember-me {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.login-container .remember-me input {
+	margin-right: 10px;
+}
+
+.login-container .remember-me label {
+	font-size: 14px;
+	color: #666;
+}
+
+/* Forgot Password Link */
+.login-container .forgot-password {
+	text-align: right;
+	margin-top: 10px;
+}
+
+.login-container .forgot-password a {
+	color: #007bff;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.login-container .forgot-password
+a:hover {
+	text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.login-container {
+		width: 90%;
+		padding: 20px;
+	}
+}

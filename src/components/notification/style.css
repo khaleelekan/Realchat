@@ -1,0 +1,86 @@
+/* Notification Styles */
+.notification {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	background-color: #323232;
+	color: white;
+	padding: 15px 20px;
+	border-radius: 10px;
+	box-shadow: 0 5px 15px rgba(0, 0,
+0, 0.2);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-20px);
+	transition: all 0.5s ease;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+}
+
+/* Notification message */
+.notification p {
+	margin: 0;
+	padding-right: 15px;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+/* Close button */
+.notification .close-btn {
+	background: none;
+	border: none;
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+	transition: color 0.3s ease;
+}
+
+.notification .close-btn:hover {
+	color: #ff4d4d;
+}
+
+/* Show notification */
+.notification.show {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+/* Success notification */
+.notification.success {
+	background-color: #4CAF50;
+}
+
+/* Error notification */
+.notification.error {
+	background-color: #F44336;
+}
+
+/* Info notification */
+.notification.info {
+	background-color: #2196F3;
+}
+
+/* Warning notification */
+.notification.warning {
+	background-color: #FFC107;
+}
+
+/* Example transition for fade out */
+.notification.fadeout {
+	animation: fadeOut 3s forwards;
+}
+
+@keyframes fadeOut {
+	0% {
+		opacity: 1;
+	}
+	80% {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	100% {
+		visibility: hidden;
+	}
+}

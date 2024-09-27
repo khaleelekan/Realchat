@@ -13,6 +13,18 @@
     justify-content: space-between;
     border-bottom: 1px solid #dddddd35;
 
+    .chatlist-icon {
+      font-size: 24px;
+      cursor: pointer;
+      margin-right: 10px; /* Adjust for spacing */
+      color: #a5a5a5; /* You can choose a color */
+    }
+    
+    .chatlist-icon:hover {
+      color: #5183fe; /* Change color on hover */
+    }
+    
+
     .user {
       display: flex;
       align-items: center;

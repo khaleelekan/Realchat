@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import EmojiPicker from "emoji-picker-react";
+import {FaUserCircle} from "react-icons/fa"; // Import an arrow icon
 import {
   arrayUnion,
   doc,
@@ -15,7 +16,7 @@ import upload from "../../lib/upload";
 import { format } from "timeago.js";
 import { toast } from "react-toastify";
 
-const Chat = () => {
+const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
   const [chat, setChat] = useState({ messages: [] });
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -26,12 +27,14 @@ const Chat = () => {
 
   const endRef = useRef(null);
 
+  // Scroll to the last message when a new message is added
   useEffect(() => {
     if (chat.messages.length > 0 && chat.messages[chat.messages.length - 1]?.senderId !== currentUser?.id) {
       endRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [chat.messages]);
 
+  // Listen to chat updates in real-time
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
       if (res.exists()) {
@@ -43,24 +46,31 @@ const Chat = () => {
     return () => unSub();
   }, [chatId]);
 
+  // Add emoji to the text input
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
     setOpen(false);
   };
 
+  // Handle image capture and size limit (5MB max)
   const handleImageCapture = (e) => {
-    if (e.target.files[0]) {
+    const file = e.target.files[0];
+    if (file && file.size <= 5000000) { // 5MB size limit
       setImg({
-        file: e.target.files[0],
-        url: URL.createObjectURL(e.target.files[0]),
+        file: file,
+        url: URL.createObjectURL(file),
       });
+    } else {
+      toast.error("Image size exceeds 5MB.");
     }
   };
 
+  // Remove selected image
   const removeImage = () => {
     setImg({ file: null, url: "" });
   };
 
+  // Handle message sending
   const handleSend = async () => {
     if (text === "" && !img.file) return;
 
@@ -97,6 +107,9 @@ const Chat = () => {
       });
 
       toast.success("Message sent successfully!");
+
+      // Scroll to the last message after sending
+      endRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
       console.error("Failed to send message:", err);
       toast.error("Failed to send message!");
@@ -110,16 +123,17 @@ const Chat = () => {
     <div className="chat">
       <div className="top">
         <div className="user">
-          <img src={user?.avatar || "./avatar.png"} alt="" />
+          <img src={user?.avatar || "./avatar.png"} alt="User avatar" />
           <div className="texts">
             <span>{user?.username}</span>
             <p>Active now</p>
           </div>
         </div>
         <div className="icons">
-          <img src="./phone.png" alt="Phone" />
-          <img src="./video.png" alt="Video" />
-          <img src="./info.png" alt="Info" />
+          <img src="./phone.png" alt="Phone" aria-label="Start phone call" />
+          <img src="./video.png" alt="Video" aria-label="Start video call" />
+          <img src="./info.png" alt="View chat information" aria-label="Chat info" />
+  <FaUserCircle size={20} color="white" />
         </div>
       </div>
       <div className="center">
@@ -129,7 +143,7 @@ const Chat = () => {
             key={message?.createdAt}
           >
             <div className="texts">
-              {message.img && <img src={message.img} alt="message media" />}
+              {message.img && <img src={message.img} alt="Message media" />}
               <p>{message.text}</p>
               {message.createdAt && (
                 <span>{format(message.createdAt.toDate ? message.createdAt.toDate() : new Date())}</span>
@@ -150,7 +164,7 @@ const Chat = () => {
       <div className="bottom">
         <div className="icons">
           <label htmlFor="file">
-            <img src="./img.png" alt="Upload" />
+            <img src="./img.png" alt="Upload" aria-label="Upload image" />
           </label>
           <input
             type="file"
@@ -160,7 +174,7 @@ const Chat = () => {
             onChange={handleImageCapture}
           />
           <label htmlFor="camera">
-            <img src="./camera.png" alt="Camera" />
+            <img src="./camera.png" alt="Camera" aria-label="Take photo" />
           </label>
           <input
             type="file"
@@ -170,7 +184,7 @@ const Chat = () => {
             style={{ display: "none" }}
             onChange={handleImageCapture}
           />
-          <img src="./mic.png" alt="Mic" />
+          <img src="./mic.png" alt="Mic" aria-label="Record voice message" />
         </div>
         <input
           type="text"
@@ -182,15 +196,17 @@ const Chat = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={isCurrentUserBlocked || isReceiverBlocked}
+          aria-label="Type your message"
         />
         <div className="emoji">
-          <img src="./emoji.png" alt="Emoji" onClick={() => setOpen((prev) => !prev)} />
+          <img src="./emoji.png" alt="Emoji" aria-label="Add emoji" onClick={() => setOpen((prev) => !prev)} />
           {open && <EmojiPicker onEmojiClick={handleEmoji} />}
         </div>
         <button
           className="sendButton"
           onClick={handleSend}
           disabled={isCurrentUserBlocked || isReceiverBlocked}
+          aria-label="Send message"
         >
           Send
         </button>
@@ -200,6 +216,8 @@ const Chat = () => {
 };
 
 export default Chat;
+
+
 
 
 

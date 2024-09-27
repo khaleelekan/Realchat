@@ -1,26 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import "./chat.css";
 import EmojiPicker from "emoji-picker-react";
-import {FaUserCircle} from "react-icons/fa"; // Import an arrow icon
-import {
-  arrayUnion,
-  doc,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
 import upload from "../../lib/upload";
 import { format } from "timeago.js";
 import { toast } from "react-toastify";
+import { FaUserCircle } from "react-icons/fa"; // Contact icon
+import ChatList from "../list/chatList/ChatList"; // Assuming ChatList component is in the same directory
 
-const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
+const Chat = () => {
   const [chat, setChat] = useState({ messages: [] });
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [img, setImg] = useState({ file: null, url: "" });
+  const [showChatList, setShowChatList] = useState(false); // State to control modal visibility
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore();
@@ -55,7 +51,7 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
   // Handle image capture and size limit (5MB max)
   const handleImageCapture = (e) => {
     const file = e.target.files[0];
-    if (file && file.size <= 5000000) { // 5MB size limit
+    if (file && file.size <= 5000000) {
       setImg({
         file: file,
         url: URL.createObjectURL(file),
@@ -107,8 +103,6 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
       });
 
       toast.success("Message sent successfully!");
-
-      // Scroll to the last message after sending
       endRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
       console.error("Failed to send message:", err);
@@ -123,19 +117,37 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
     <div className="chat">
       <div className="top">
         <div className="user">
-          <img src={user?.avatar || "./avatar.png"} alt="User avatar" />
+          <img src={user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
             <span>{user?.username}</span>
             <p>Active now</p>
           </div>
         </div>
         <div className="icons">
-          <img src="./phone.png" alt="Phone" aria-label="Start phone call" />
-          <img src="./video.png" alt="Video" aria-label="Start video call" />
-          <img src="./info.png" alt="View chat information" aria-label="Chat info" />
-  <FaUserCircle size={20} color="white" />
+          <FaUserCircle
+            size={20}
+            color="white"
+            style={{ cursor: "pointer" }}
+            onClick={() => setShowChatList(true)} // Show modal on icon click
+            className="chatlist-icon" // Add class for media query control
+          />
+          <img src="./phone.png" alt="Phone" />
+          <img src="./video.png" alt="Video" />
+          <img src="./info.png" alt="Info" />
         </div>
       </div>
+
+      {/* Modal for ChatList */}
+      {showChatList && (
+        <div className="chatlist-modal">
+          <div className="modal-overlay" onClick={() => setShowChatList(false)}></div> {/* Background overlay */}
+          <div className="modal-content">
+            <span className="close" onClick={() => setShowChatList(false)}>×</span> {/* Close button */}
+            <ChatList /> {/* Chat list component */}
+          </div>
+        </div>
+      )}
+
       <div className="center">
         {chat.messages.map((message) => (
           <div
@@ -143,7 +155,7 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
             key={message?.createdAt}
           >
             <div className="texts">
-              {message.img && <img src={message.img} alt="Message media" />}
+              {message.img && <img src={message.img} alt="message media" />}
               <p>{message.text}</p>
               {message.createdAt && (
                 <span>{format(message.createdAt.toDate ? message.createdAt.toDate() : new Date())}</span>
@@ -164,7 +176,7 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
       <div className="bottom">
         <div className="icons">
           <label htmlFor="file">
-            <img src="./img.png" alt="Upload" aria-label="Upload image" />
+            <img src="./img.png" alt="Upload" />
           </label>
           <input
             type="file"
@@ -174,7 +186,7 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
             onChange={handleImageCapture}
           />
           <label htmlFor="camera">
-            <img src="./camera.png" alt="Camera" aria-label="Take photo" />
+            <img src="./camera.png" alt="Camera" />
           </label>
           <input
             type="file"
@@ -184,7 +196,7 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
             style={{ display: "none" }}
             onChange={handleImageCapture}
           />
-          <img src="./mic.png" alt="Mic" aria-label="Record voice message" />
+          <img src="./mic.png" alt="Mic" />
         </div>
         <input
           type="text"
@@ -196,17 +208,15 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={isCurrentUserBlocked || isReceiverBlocked}
-          aria-label="Type your message"
         />
         <div className="emoji">
-          <img src="./emoji.png" alt="Emoji" aria-label="Add emoji" onClick={() => setOpen((prev) => !prev)} />
+          <img src="./emoji.png" alt="Emoji" onClick={() => setOpen((prev) => !prev)} />
           {open && <EmojiPicker onEmojiClick={handleEmoji} />}
         </div>
         <button
           className="sendButton"
           onClick={handleSend}
           disabled={isCurrentUserBlocked || isReceiverBlocked}
-          aria-label="Send message"
         >
           Send
         </button>
@@ -216,6 +226,7 @@ const Chat = ({ onShowChatList }) => { // Add a prop to handle showing chat list
 };
 
 export default Chat;
+
 
 
 

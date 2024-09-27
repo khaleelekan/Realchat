@@ -13,18 +13,6 @@
     justify-content: space-between;
     border-bottom: 1px solid #dddddd35;
 
-    .chatlist-icon {
-      font-size: 24px;
-      cursor: pointer;
-      margin-right: 10px; /* Adjust for spacing */
-      color: #a5a5a5; /* You can choose a color */
-    }
-    
-    .chatlist-icon:hover {
-      color: #5183fe; /* Change color on hover */
-    }
-    
-
     .user {
       display: flex;
       align-items: center;
@@ -208,4 +196,81 @@
   top: 10px;
   right: 10px;
   cursor: pointer;
+}
+
+/* Hide the chat list icon by default */
+.chatlist-icon {
+  display: none;
+}
+
+/* For screens smaller than 768px (mobile phones) */
+@media (max-width: 768px) {
+  .chatlist-icon {
+    display: inline-block;
+  }
+
+  /* Make the modal cover the entire screen on smaller devices */
+  .chatlist-modal .modal-content {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    z-index: 1001;
+    overflow-y: auto;
+  }
+
+  .modal-overlay {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* Adjust close button */
+  .modal-content .close {
+    font-size: 24px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+  }
+}
+
+/* For tablets (between 768px and 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .chatlist-icon {
+    display: inline-block;
+  }
+
+  /* Modal adjustments for tablets */
+  .chatlist-modal .modal-content {
+    width: 80vw;
+    height: 80vh;
+    position: fixed;
+    top: 10vh;
+    left: 10vw;
+    background-color: white;
+    z-index: 1001;
+    overflow-y: auto;
+  }
+
+  .modal-overlay {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .modal-content .close {
+    font-size: 24px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+  }
+}
+
+/* For larger screens (above 1024px) */
+@media (min-width: 1024px) {
+  .chatlist-icon {
+    display: none;
+  }
 }
